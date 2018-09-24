@@ -1,6 +1,7 @@
 package com.steer.base;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -119,7 +120,83 @@ public class StreamTest {
 
     }
 
-    public static void main(String[] args) {
-        optional();
+    public static void reduce(){
+        //拼接A B C D
+            //无起始值
+        String concatStr = Stream.of("A","B","C","D").reduce(String::concat).get();
+            //有起始值
+        String concatStr2 = Stream.of("A","B","C","D").reduce("",String::concat);
     }
+
+    public static void limitAndSkip(){
+        List<String> list = Arrays.asList("a","b","c","d","e");
+        //limit限制结果为前4个   skip过滤掉前2个
+        List<String> newList = list.stream().map(String::toUpperCase).limit(4).skip(2).collect(Collectors.toList());
+    }
+
+    public static void sort(){
+        List<String> list = Arrays.asList("a","b","c","d","e");
+
+        List<String> newList = list.stream().map(String::toUpperCase).limit(4).skip(2).sorted((a,b)-> {
+            return b.compareTo(a);
+        }).collect(Collectors.toList());
+    }
+
+    public static void distinct(){
+        List<String> list = Arrays.asList("a","a","b","b","e");
+        List<String> distinctList =list.stream().map(String::toUpperCase).distinct().collect(Collectors.toList());
+    }
+
+    public static void match(){
+        List<Person> personList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Person person = new Person("name"+i,i);
+            personList.add(person);
+        }
+
+        boolean a = personList.stream().allMatch(p->p.getNo() >3);
+        boolean b = personList.stream().anyMatch(p->p.getNo() >3);
+        boolean c = personList.stream().noneMatch(p->p.getNo() >3);
+
+    }
+    /**
+     *supplier一般用于生成随机数
+     */
+    public static void supplier(){
+        Random seed = new Random();
+        Supplier<Integer> random = seed::nextInt;
+        Stream.generate(random).limit(10).forEach(System.out::println);
+
+        //自定义Supplier
+        Stream.generate(PersonSupplier::new).limit(10).forEach(p->System.out.println(p.get().getName()+":"+p.get().getNo()));
+    }
+
+    /**
+     *iterate
+     */
+    public static void iterate(){
+        //等差数列
+        Stream.iterate(0,n->n+3).limit(10).forEach(x->System.out.println(x+" "));
+    }
+
+    /**
+     *groupingBy/partitioningBy
+     */
+    public static void group(){
+        List<Person> personList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Person person = new Person("name"+i,i);
+            personList.add(person);
+        }
+        //返回以person的no属性作为key，  List<person>作为value  进行分组
+        Map<Integer,List<Person>> map = personList.stream().collect(Collectors.groupingBy(Person::getNo));
+        //key为false和true, value为no>3和no<=3的2组List<person>
+        Map<Boolean,List<Person>> map2 = personList.stream().collect(Collectors.partitioningBy(p->p.getNo()>3));
+        List<Person> personList2 = map2.get(true);
+    }
+
+    public static void main(String[] args) {
+//        group();
+    }
+
 }
