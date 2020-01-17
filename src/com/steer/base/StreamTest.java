@@ -120,6 +120,9 @@ public class StreamTest {
 
     }
 
+    /**
+     * 聚合求值
+     */
     public static void reduce(){
         //拼接A B C D
             //无起始值
@@ -193,6 +196,23 @@ public class StreamTest {
         //key为false和true, value为no>3和no<=3的2组List<person>
         Map<Boolean,List<Person>> map2 = personList.stream().collect(Collectors.partitioningBy(p->p.getNo()>3));
         List<Person> personList2 = map2.get(true);
+    }
+
+    /**
+     * 并行流
+     * 底层使用JoinFork线程池
+     * 执行任务数等于CPU核数，以达到最大利用CPU资源
+     */
+    public static void parallelStream(){
+        List<Person> personList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Person person = new Person("name"+i,i);
+            personList.add(person);
+        }
+        //按顺序
+        personList.parallelStream().forEachOrdered(p->{
+            System.out.println(p.getName());
+        });
     }
 
     public static void main(String[] args) {
