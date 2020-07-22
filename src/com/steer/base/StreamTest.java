@@ -215,6 +215,16 @@ public class StreamTest {
         });
     }
 
+    public static String collectJoin(){
+        List<String> data = new ArrayList<>();
+        data.add("1");
+        data.add("11");
+        data.add("4");
+        data.add("5");
+        data.add("7");
+        return data.stream().collect(Collectors.joining(","));
+    }
+
     public static void main(String[] args) {
 //        group();
     }
