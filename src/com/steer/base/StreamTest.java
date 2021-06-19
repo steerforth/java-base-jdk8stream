@@ -1,5 +1,6 @@
 package com.steer.base;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -83,6 +84,23 @@ public class StreamTest {
         Stream<List<Integer>> inputStream = Stream.of(Arrays.asList(1),Arrays.asList(2,3),Arrays.asList(4,5,6));
         Stream<Integer> outputStream = inputStream.flatMap(childList->childList.stream());
         List<Integer> flatList = outputStream.collect(Collectors.toList());
+    }
+
+    public static void flatMap2(){
+        Map<String,List<Integer>> map = new HashMap<>();
+        List<Integer> list1 = new ArrayList<>();
+        list1.add(3);
+        list1.add(5);
+
+        List<Integer> list2 = new ArrayList<>();
+        list2.add(2);
+        list2.add(4);
+        list2.add(6);
+
+        map.put("A",list1);
+        map.put("B",list2);
+
+        List<Integer> collect = map.entrySet().stream().flatMap(e -> e.getValue().stream()).collect(Collectors.toList());
     }
 
     /**
@@ -226,6 +244,7 @@ public class StreamTest {
     }
 
     public static void main(String[] args) {
+        flatMap2();
 //        group();
     }
 
